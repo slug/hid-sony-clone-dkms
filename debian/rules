@@ -1,0 +1,63 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+include /usr/share/dpkg/default.mk
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_VERSION_UPSTREAM
+
+KERNEL_TMP_DIR := $(CURDIR)/kernel_source
+DISTRIBUTION_CODENAME := $(shell lsb_release --short --codename)
+KERNEL_SOURCE_DIR := $(KERNEL_TMP_DIR)/$(DISTRIBUTION_CODENAME)
+KERNEL_REPOSITORY := git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/$(DISTRIBUTION_CODENAME)
+KERNEL_BRANCH := Ubuntu-5.4.0-56.62
+#DEST_DIR := $(CURDIR)/debian/$(DEB_SOURCE)/usr/src/$(DEB_SOURCE)-$(DEB_VERSION_UPSTREAM)
+DEST_DIR := usr/src/$(DEB_SOURCE)-$(DEB_VERSION_UPSTREAM)
+
+%:
+	dh $@ --with dkms
+
+override_dh_install:
+	dh_install Makefile $(DEST_DIR)
+	dh_install hid-sony-blacklist.conf etc/modprobe.d/
+	dh_install $(KERNEL_BRANCH).patch $(DEST_DIR)/patches
+	dh_install kernel_source/$(DISTRIBUTION_CODENAME)/drivers/hid/hid-ids.h $(DEST_DIR)
+	install -D --verbose --mode 0644 -D kernel_source/$(DISTRIBUTION_CODENAME)/drivers/hid/hid-sony.c $(CURDIR)/debian/$(DEB_SOURCE)/$(DEST_DIR)/$(DEB_SOURCE).c
+
+override_dh_dkms:
+	dh_dkms -V $(DEB_VERSION_UPSTREAM)
+
+override_dh_auto_configure: debian/hid-sony-clone-dkms.dkms kernel_source
+override_dh_auto_build:
+override_dh_auto_test:
+override_dh_auto_install:
+
+override_dh_auto_clean:
+	dh_auto_clean
+	$(RM) debian/hid-sony-clone-dkms.dkms
+#	$(RM) -r $(KERNEL_TMP_DIR)
+
+$(KERNEL_TMP_DIR):
+	mkdir -p $(KERNEL_TMP_DIR)
+
+kernel_source: $(KERNEL_SOURCE_DIR)
+
+$(KERNEL_SOURCE_DIR): $(KERNEL_TMP_DIR)
+	cd $(KERNEL_TMP_DIR) && git clone --branch $(KERNEL_BRANCH) --depth 1 $(KERNEL_REPOSITORY)
+
+debian/hid-sony-clone-dkms.dkms: debian/hid-sony-clone-dkms.dkms.in
+	sed -e "s,@KERNEL_BRANCH@,$(KERNEL_BRANCH),g" $< > $@
+
+.PHONY: kernel_source

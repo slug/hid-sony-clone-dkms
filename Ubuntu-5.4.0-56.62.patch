@@ -1,0 +1,14 @@
+--- old/hid-sony-clone-dkms.c	2020-11-25 19:18:37.787136488 -0500
++++ new/hid-sony-clone-dkms.c	2020-11-25 19:20:14.887105172 -0500
+@@ -2488,9 +2488,8 @@
+ 				HID_REQ_GET_REPORT);
+ 
+ 		if (ret != DS4_FEATURE_REPORT_0x81_SIZE) {
+-			hid_err(sc->hdev, "failed to retrieve feature report 0x81 with the DualShock 4 MAC address\n");
+-			ret = ret < 0 ? ret : -EINVAL;
+-			goto out_free;
++			hid_warn(sc->hdev, "failed to retrieve feature report 0x81 with the DualShock 4 MAC address\n");
++			ret = DS4_FEATURE_REPORT_0x81_SIZE;
+ 		}
+ 
+ 		memcpy(sc->mac_address, &buf[1], sizeof(sc->mac_address));

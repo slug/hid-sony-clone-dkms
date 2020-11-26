@@ -1,0 +1,11 @@
+hid-sony-clone-dkms (0.0.2) focal; urgency=medium
+
+  * fix up deps
+
+ -- Nuno Almeida <288957+slug@users.noreply.github.com>  Wed, 25 Nov 2020 22:01:46 -0500
+
+hid-sony-clone-dkms (0.0.1) focal; urgency=medium
+
+  * Initial release
+
+ -- Nuno Almeida <288957+slug@users.noreply.github.com>  Wed, 25 Nov 2020 11:40:09 -0500

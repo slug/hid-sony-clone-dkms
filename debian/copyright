@@ -1,0 +1,12 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: hid-sony-clone-dkms
+Upstream-Contact: Nuno Almeida <288957+slug@users.noreply.github.com>
+Source: https://github.com/slug/hid-sony-clone-dkms
+
+Files: *
+Copyright: 2020 Nuno Almeida <288957+slug@users.noreply.github.com>
+License: GPL-3+
+
+Files: debian/*
+Copyright: 2020 Nuno Almeida <288957+slug@users.noreply.github.com>
+License: GPL-3+

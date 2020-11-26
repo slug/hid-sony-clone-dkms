@@ -1,0 +1,20 @@
+Source: hid-sony-clone-dkms
+Priority: optional
+Maintainer: Nuno Almeida <288957+slug@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 12),
+	       dkms (>= 2.8.1-5ubuntu1),
+	       linux-headers-generic,
+	       linux-headers-5.4.0-54-generic
+Standards-Version: 4.4.1
+Section: libs
+Homepage: https://github.com/slug/hid-sony-clone-dkms/
+Vcs-Browser: https://github.com/slug/hid-sony-clone-dkms/
+Vcs-Git: https://github.com/slug/hid-sony-clone-dkms
+
+Package: hid-sony-clone-dkms
+Architecture: all
+Section: kernel
+Depends:
+ ${misc:Depends},
+Description: DKMS source for the hid sony clone patch
+ DKMS source for the hid sony clone patch
